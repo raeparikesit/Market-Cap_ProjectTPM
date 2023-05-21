@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project_tpm/login.dart';
 import 'package:project_tpm/widgets/bottom_map.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
         systemNavigationBarColor: Colors.black));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BottomMap(),
+      home: LoginPage(),
     );
   }
 }

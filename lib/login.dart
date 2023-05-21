@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:project_tpm/homeScreen.dart';
+import 'package:project_tpm/services/user_database_helper.dart';
 import 'package:project_tpm/widgets/bottom_map.dart';
 import 'package:project_tpm/register.dart';
 
 class LoginPage extends StatefulWidget {
-  final String username;
-  const LoginPage({super.key, required this.username});
+  // final String username;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -191,28 +193,36 @@ class _LoginPageState extends State<LoginPage> {
 
               //* Login Button
               ElevatedButton(
-                onPressed: () {
-                  String text = "";
-                  if (username == "kelompok8" && password == "tugas4tpm") {
+                onPressed: () async {
+                  try {
+                    var listUser = await userDatabaseHelper
+                        .getUserByUsernameAndPassword(username, password);
+                    if (listUser.length > 0) {
+                      final snackbar = SnackBar(
+                        content: Text('Login Berhasil'),
+                      );
+                      // SharedPreferences pref =
+                      //     await SharedPreferences.getInstance();
+                      // pref.setString('username', listUser[0].username!);
+                      // pref.setInt('userId', listUser[0].id!);
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                      // Navigator.pushReplacementNamed(
+                      //     context, RouterName.homepage);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BottomMap(),
+                          ));
+                    }
+                  } catch (e) {
                     setState(() {
-                      text = "🚀 Login Success!";
-                      isLoginSuccess = true;
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return BottomMap();
-                      }));
-                    });
-                  } else {
-                    setState(() {
-                      text = "🤔 Login Failed!";
-                      isLoginSuccess = false;
+                      // error = 'Username or Password is wrong';
+                      final snackbar = SnackBar(
+                        content: Text('Login Gagal!'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     });
                   }
-                  print("isLoginSuccess: $isLoginSuccess");
-                  SnackBar snackBar = SnackBar(
-                    content: Text(text),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 },
                 style: ButtonStyle(
                   padding: MaterialStatePropertyAll(
@@ -259,6 +269,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               )
+
               //* End of Login Button
             ],
           ),

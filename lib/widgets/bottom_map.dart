@@ -134,7 +134,7 @@ class _BottomMapState extends State<BottomMap> {
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return LoginPage(username: '');
+                          return LoginPage();
                         }));
                       },
                       child: Column(

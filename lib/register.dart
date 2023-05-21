@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:project_tpm/models/user_model.dart';
+import 'package:project_tpm/services/user_database_helper.dart';
 import 'package:project_tpm/widgets/bottom_map.dart';
 import 'package:project_tpm/login.dart';
 
@@ -180,28 +182,24 @@ class _RegisterState extends State<Register> {
 
               //* Login Button
               ElevatedButton(
-                onPressed: () {
-                  String text = "";
-                  if (username == "kelompok8" && password == "tugas4tpm") {
-                    setState(() {
-                      text = "🚀 Login Success!";
-                      isLoginSuccess = true;
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return BottomMap();
-                      }));
-                    });
-                  } else {
-                    setState(() {
-                      text = "🤔 Login Failed!";
-                      isLoginSuccess = false;
-                    });
+                onPressed: () async {
+                  UserModel user =
+                      UserModel(username: username, password: password);
+                  try {
+                    await userDatabaseHelper.createUser(user);
+                  } catch (e) {
+                    final snackBar = SnackBar(content: Text('Register Gagal!'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    return;
                   }
-                  print("isLoginSuccess: $isLoginSuccess");
-                  SnackBar snackBar = SnackBar(
-                    content: Text(text),
-                  );
+                  final snackBar =
+                      SnackBar(content: Text('Register Berhasil!'));
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ));
                 },
                 style: ButtonStyle(
                   padding: MaterialStatePropertyAll(
